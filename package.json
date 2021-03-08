@@ -1,0 +1,23 @@
+{
+  "name": "retail-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/COMP4990/retail-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/COMP4990/retail-backend/issues"
+  },
+  "homepage": "https://github.com/COMP4990/retail-backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
