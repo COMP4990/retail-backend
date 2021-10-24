@@ -2,15 +2,25 @@
 const {Sequelize} = require("sequelize")
 const initModels = require("./models/init-models")
 
-const sequelize = new Sequelize('geng115_db', 'root', 'g18668168837', {
-    host: 'localhost',
+// const sequelize = new Sequelize('geng115_db', 'root', 'g18668168837', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//     pool: {
+//       max: 5,
+//       min: 0,
+//       idle: 10000
+//     }
+// });
+
+const sequelize = new Sequelize('geng115_db', 'geng115_db', 'password', {
+    host: 'geng115.myweb.cs.uwindsor.ca',
     dialect: 'mysql',
     pool: {
       max: 5,
       min: 0,
       idle: 10000
     }
-  });
+});
 
   // sequelize.showAllSchemas
 

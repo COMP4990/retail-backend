@@ -1,14 +1,25 @@
+const chalk = require('chalk')
 const initModels = require("./models/init-models")
 const {Sequelize} = require("sequelize")
-var sequelize = new Sequelize('geng115_db', 'root', 'g18668168837', {
-    host: 'localhost',
+// var sequelize = new Sequelize('geng115_db', 'root', 'g18668168837', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//     pool: {
+//       max: 5,
+//       min: 0,
+//       idle: 10000
+//     }
+//   });
+
+const sequelize = new Sequelize('geng115_db', 'geng115_db', 'password', {
+    host: 'geng115.myweb.cs.uwindsor.ca',
     dialect: 'mysql',
     pool: {
       max: 5,
       min: 0,
       idle: 10000
     }
-  });
+});
 
 const models = initModels(sequelize)
 
@@ -32,10 +43,13 @@ async function createAdmin(email, password) {
 }
 
 async function showAdmin(){
+  console.log("Show all admin records")
   const admin= await models.Admin.findAll({raw:true})
-  console.log(admin)
+  console.log(typeof(admin))
+  process.exit()
 }
 
 // connectionTesting()
 // createAdmin("auth@example.com","password")
+console.log(chalk.cyan("Checking Database Connection: "))
 showAdmin()
