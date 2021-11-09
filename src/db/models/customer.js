@@ -13,11 +13,11 @@ module.exports = function(sequelize, DataTypes) {
       unique: "username"
     },
     fname: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     lname: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     password: {

@@ -1,25 +1,19 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('order', {
-    order_id: {
+  return sequelize.define('category', {
+    category_id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
-    },
-    payment_status: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      defaultValue: "Incomplete"
+    category_name: {
+      type: DataTypes.STRING(64),
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'order',
+    tableName: 'category',
     timestamps: false,
     indexes: [
       {
@@ -27,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "order_id" },
+          { name: "category_id" },
         ]
       },
     ]

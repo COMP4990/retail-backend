@@ -23,8 +23,8 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    total_price: {
-      type: DataTypes.DOUBLE(10,2),
+    subtotal: {
+      type: DataTypes.DECIMAL(15,2),
       allowNull: false
     }
   }, {
