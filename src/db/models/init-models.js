@@ -3,6 +3,7 @@ var _Admin = require("./Admin");
 var _brand = require("./brand");
 var _brand_products = require("./brand_products");
 var _cart = require("./cart");
+var _category = require("./category");
 var _customer = require("./customer");
 var _customer_orders = require("./customer_orders");
 var _order = require("./order");
@@ -14,6 +15,7 @@ function initModels(sequelize) {
   var brand = _brand(sequelize, DataTypes);
   var brand_products = _brand_products(sequelize, DataTypes);
   var cart = _cart(sequelize, DataTypes);
+  var category = _category(sequelize, DataTypes);
   var customer = _customer(sequelize, DataTypes);
   var customer_orders = _customer_orders(sequelize, DataTypes);
   var order = _order(sequelize, DataTypes);
@@ -52,6 +54,7 @@ function initModels(sequelize) {
     brand,
     brand_products,
     cart,
+    category,
     customer,
     customer_orders,
     order,

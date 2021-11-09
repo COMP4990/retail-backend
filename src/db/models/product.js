@@ -19,8 +19,8 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: false
     },
-    categories: {
-      type: DataTypes.STRING(50),
+    category_id: {
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     price: {
@@ -31,6 +31,14 @@ module.exports = function(sequelize, DataTypes) {
     image: {
       type: DataTypes.BLOB,
       allowNull: true
+    },
+    sku: {
+      type: DataTypes.STRING(32),
+      allowNull: false
+    },
+    item_in_stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
