@@ -10,7 +10,7 @@ const bycrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8000
 
 const app = express();
 const router = express.Router();
