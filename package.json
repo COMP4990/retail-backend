@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "test": "node src/db/testConnection.js",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,16 @@
   },
   "homepage": "https://github.com/COMP4990/retail-backend#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "bcryptjs": "^2.4.3",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.7.0",
+    "sequelize-auto": "^0.8.4"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0"
   }
 }
