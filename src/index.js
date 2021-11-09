@@ -38,7 +38,7 @@ app.get('/', async (req, res) => {
 });
 
 
-// admin login
+// customer login
 app.post("/login", async(req, res) => {
     try {
         // get email & password from request body
