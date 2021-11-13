@@ -20,7 +20,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/',admin)
+app.use('/admin',admin)
 app.use('/',customer)
 
 

@@ -20,8 +20,8 @@ router.post("/login", async (req, res) => {
             }})
 
         // Check if user exists
-        if(!user){
-            res.status(400).send("User does not exist")
+        if(user === null){
+            return res.status(400).send("User does not exist")
         }
 
         // password authentication

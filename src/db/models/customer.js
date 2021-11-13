@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     password: {
-      type: DataTypes.CHAR(50),
+      type: DataTypes.STRING(64),
       allowNull: false
     },
     address: {
