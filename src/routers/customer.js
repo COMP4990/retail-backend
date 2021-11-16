@@ -5,7 +5,6 @@ const bycrypt = require('bcryptjs') // used for encrypt password
 const jwt = require('jsonwebtoken')
 const fs = require('fs') // used for store user info in json web token
 const path = require('path')
-const { nextTick } = require('process')
 
 // List products in store
 router.get("/products", async (req, res) => {
@@ -17,6 +16,80 @@ router.get("/products", async (req, res) => {
         res.send(error).status(500)
     }
 
+})
+
+// update item quantity & subtotal in shopping cart
+router.post("/addToCart", async (req, res) =>{
+    const user_id=req.body.user_id
+    const product_id = req.body.product_id
+    console.log(user_id, product_id)
+    try {
+        // get product price and current stock
+        const product = await models.product.findByPk(product_id)
+        const price = product.price
+        const item_in_stock = product.item_in_stock
+        // console.log("product")
+        // console.log(product)
+        var productInCart = await models.cart.findOne({
+            where: {
+                user_id, 
+                product_id
+            }
+        })
+        // console.log(productInCart)
+
+        // if there this product already in cart, just change quantity and update subtotal
+        if (productInCart !== null){
+            productInCart.quantity = productInCart.quantity >= item_in_stock ? item_in_stock : productInCart.quantity + 1
+            productInCart.subtotal = productInCart.quantity * price
+            const affectedRows = await models.cart.update(
+                {
+                    quantity: productInCart.quantity,
+                    subtotal: productInCart.subtotal
+                }, 
+                {
+                    where:{
+                        user_id,
+                        product_id
+                    }
+                }
+            )
+            
+            return res.status(201).send("Affected Row(s): "+affectedRows)
+            
+        }else{ // if this product not in cart, add a new item into cart
+            var productInCart = await models.cart.create(
+                {
+                    user_id,
+                    product_id,
+                    quantity: 1,
+                    subtotal:price        
+                }
+            )
+            return res.status(201).send(productInCart)
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+
+})
+
+router.get("/cart", async (req, res) =>{
+    const user_id=req.body.user_id
+    try {
+        const items = await models.cart.findAll(
+            {
+                where:
+                    {
+                        user_id:user_id
+                    }
+            }
+        )
+        res.status(200).send(items)
+
+    } catch (error) {
+        res.status(500).send(error)
+    }
 })
 
 // user login
