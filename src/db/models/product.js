@@ -21,6 +21,14 @@ module.exports = function(sequelize, DataTypes) {
     },
     category_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'category',
+        key: 'category_id'
+      }
+    },
+    description: {
+      type: DataTypes.STRING(256),
       allowNull: true
     },
     price: {
@@ -28,13 +36,13 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0.00
     },
-    image: {
-      type: DataTypes.BLOB,
+    image_path: {
+      type: DataTypes.STRING(256),
       allowNull: true
     },
     sku: {
       type: DataTypes.STRING(32),
-      allowNull: false
+      allowNull: true
     },
     item_in_stock: {
       type: DataTypes.INTEGER,
@@ -58,6 +66,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "brand_id" },
+        ]
+      },
+      {
+        name: "category_id",
+        using: "BTREE",
+        fields: [
+          { name: "category_id" },
         ]
       },
     ]

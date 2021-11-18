@@ -1,19 +1,11 @@
+require('dotenv').config()
 // var mysql = require('mysql2/promise')
 const {Sequelize} = require("sequelize")
 const initModels = require("./models/init-models")
 
-// const sequelize = new Sequelize('geng115_db', 'root', 'g18668168837', {
-//     host: 'localhost',
-//     dialect: 'mysql',
-//     pool: {
-//       max: 5,
-//       min: 0,
-//       idle: 10000
-//     }
-// });
-
-const sequelize = new Sequelize('geng115_db', 'geng115_db', 'password', {
-    host: 'geng115.myweb.cs.uwindsor.ca',
+// create connection to db
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
     dialect: 'mysql',
     pool: {
       max: 5,
