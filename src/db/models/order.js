@@ -7,6 +7,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    customer_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'customer',
+        key: 'customer_id'
+      }
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -28,6 +36,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "order_id" },
+        ]
+      },
+      {
+        name: "customer_id",
+        using: "BTREE",
+        fields: [
+          { name: "customer_id" },
         ]
       },
     ]
