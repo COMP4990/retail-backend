@@ -250,14 +250,6 @@ router.post("/checkout", async (req, res) => {
             return checkout_items
         })
 
-        // ordered_items.forEach(async (item) => {
-        //     console.log(item)
-        //     const await models.product.update({ quantity: item.quantity - 1 }, { where: { product_id: item.product_id } })
-        // })
-
-        // console.log(ordered_items)
-        // const created_at = order.created_at
-
         res.status(201).send(result)
 
 

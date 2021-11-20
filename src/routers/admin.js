@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const {models, sequelize}= require("../db/db_connect")
+const {dw_models, dw_sequelize, QueryTypes} = require("../datawarehouse/dw_connect")
+
 // used for encrypt password
 const bycrypt = require('bcryptjs')
 // used for store user info in json web token
@@ -66,11 +68,67 @@ router.post("/register", async (req, res) => {
             res.status(400).send("Email already registered")
         }else{
 
-            res.status(500).json(error)
+            res.status(500).send(error)
         }
     }
 })
 
+// List number of all orders made in the past 
+router.get("/numOfAllOrders", async (req, res) => {
+    try {
+        const result = await dw_models.DIM_ORDER.findAndCountAll()
+        
+        res.status(200).json(result)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
+/**
+ * 
+ * SELECT O.created_at as DATE, SUM(subtotal) 
+ * FROM ORDER_FACT as H, DIM_ORDER as O 
+ * WHERE H.order_key = O.order_key AND O.payment_status = 1 
+ * GROUP BY O.created_at
+ */
+
+router.get("/salesPrice/:Days", async (req, res) =>{
+    const Days = req.params.Days
+    try {
+        var daySpan;
+        if (Days == "day") {
+            daySpan = 1
+        }
+        if (Days == "week") {
+            daySpan = 7
+        }
+        if (Days == "month") {
+            daySpan = 31
+        }
+
+        if (daySpan) {
+            var result = await dw_sequelize.query(
+                'SELECT DATE(O.created_at) as `Date`, SUM(subtotal) as `Sales` ' +
+                'FROM ORDER_FACT as H, DIM_ORDER as O ' +
+                'WHERE H.order_key = O.order_key AND O.payment_status = 1 ' +
+                'GROUP BY DATE(O.created_at);',
+                {
+                    type: QueryTypes.SELECT
+                })
+
+            result.forEach( (item) => {
+                // console.log(item.scales)
+                item.Sales = parseFloat(item.Sales)
+            })
+
+            res.status(200).json(result)
+        }
+
+        
+    } catch (error) {
+        
+    }
+    
+})
 
 module.exports = router
