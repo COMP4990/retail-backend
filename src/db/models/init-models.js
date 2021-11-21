@@ -40,6 +40,8 @@ function initModels(sequelize) {
   customer.hasMany(cart, { as: "carts", foreignKey: "user_id"});
   customer_orders.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
   customer.hasMany(customer_orders, { as: "customer_orders", foreignKey: "customer_id"});
+  order.belongsTo(customer, { as: "customer", foreignKey: "customer_id"});
+  customer.hasMany(order, { as: "orders", foreignKey: "customer_id"});
   customer_orders.belongsTo(order, { as: "order", foreignKey: "order_id"});
   order.hasMany(customer_orders, { as: "customer_orders", foreignKey: "order_id"});
   order_history.belongsTo(order, { as: "order", foreignKey: "order_id"});

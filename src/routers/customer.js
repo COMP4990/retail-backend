@@ -74,9 +74,11 @@ router.post("/addToCart", async (req, res) =>{
 
 })
 
+// list items in user's shopping cart
 router.get("/cart", async (req, res) =>{
     const user_id=req.body.user_id
     try {
+        // get items by user id
         const items = await models.cart.findAll(
             {
                 where:
@@ -113,6 +115,8 @@ router.post("/login", async (req, res) => {
         // password authentication
         if(bycrypt.compareSync(password, user.password)){
             console.log(user)
+
+            // sign jwt with username & password
             const access_token = jwt.sign({username:user.username, password: user.password}, process.env.ACCESS_TOKEN_SECRET)
             const result = {
                 accessToken:access_token,
@@ -172,6 +176,85 @@ router.post("/register", async (req, res) => {
 
             res.status(500).json(error)
         }
+    }
+})
+
+router.post("/checkout", async (req, res) => {
+    const user_id = req.body.user_id
+    try {
+        const items = await models.cart.findAll(
+            {
+                where:
+                {
+                    user_id: user_id
+                }
+            }
+        )
+        /** Item structure
+         * [
+         *  {
+         *      "user_id": 7,
+         *      "product_id": 3,
+         *      "quantity": 7,
+         *      "subtotal": "419.93"
+         *   },
+         *   {...}
+         * ]
+         */
+        // check if cart is empty
+        if( items.length < 1){
+            return res.status(400).send("Cart is empty")
+        }
+        
+
+        // create a new order in db
+        const order = await models.order.create({
+            customer_id: user_id
+        })
+
+        // get order_id & time
+        const order_id = order.order_id
+        
+        // push each ordered item into array and add into order history
+        var ordered_items = []
+        items.forEach(item => {
+            ordered_items.push({
+                order_id: order_id,
+                product_id: item.product_id,
+                quantity: item.quantity,
+                subtotal: item.subtotal,
+                price_each: item.subtotal / item.quantity
+            })
+        })
+
+        const result = await sequelize.transaction(async (t) =>{
+            const checkout_items = await models.order_history.bulkCreate(ordered_items, {transaction: t})
+            
+            // clear user shopping cart
+            await models.cart.destroy({where: { user_id } })
+
+            Promise.all(
+                ordered_items.map( async(item) => {
+                    // console.log(item)
+                    await models.product.decrement({
+                        item_in_stock: item.quantity },
+                        { 
+                            where: 
+                            { 
+                                product_id: item.product_id 
+                            } 
+                        })
+                })
+            )
+
+            return checkout_items
+        })
+
+        res.status(201).send(result)
+
+
+    } catch (error) {
+        res.status(500).send(error)
     }
 })
 
