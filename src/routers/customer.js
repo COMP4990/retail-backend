@@ -9,13 +9,29 @@ const path = require('path')
 // List products in store
 router.get("/products", async (req, res) => {
     try {
-        const products = await models.product.findAll();
+        const products = await models.product.findAll()
         
         res.json(products).status(200)
+        
     } catch (error) {
         res.send(error).status(500)
     }
 
+})
+
+router.get("/product", async (req, res) => {
+    const product_id = req.query.product_id
+    try {
+        if (product_id !== undefined && product_id !== null) {
+            // console.log(product_id)
+            const product = await models.product.findByPk(product_id)
+            res.json(product).status(200)
+        }else{
+            res.status(400).send("product_id missing")
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
 })
 
 // update item quantity & subtotal in shopping cart
@@ -74,10 +90,36 @@ router.post("/addToCart", async (req, res) =>{
 
 })
 
-// list items in user's shopping cart
-router.get("/cart", async (req, res) =>{
-    const user_id=req.body.user_id
+router.delete("/deleteCartItem", async (req, res) => {
+    const user_id = req.query.user_id
+    const product_id = req.query.product_id
+
     try {
+        if (user_id !== undefined && product_id !== undefined){
+            const result = await models.cart.destroy({
+                where: {
+                    user_id,
+                    product_id
+                }
+            })
+            res.status(200).json(result)
+        }else{
+            res.status(400).send("User or product id not specified")
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+
+// list items in user's shopping cart
+// takes ?user_id as query parameter
+router.get("/cart", async (req, res) =>{
+    const user_id=req.query.user_id
+    try {
+        if (!user_id){
+            throw new Error("User ID not included")
+        }
         // get items by user id
         const items = await models.cart.findAll(
             {

@@ -84,9 +84,9 @@ router.get("/numOfAllOrders", async (req, res) => {
     }
 })
 
-
-router.get("/salesPrice/:mode", async (req, res) =>{
-    const mode = req.params.mode
+// takes ?mode as query parameter
+router.get("/salesPrice/", async (req, res) =>{
+    const mode = req.query.mode
     try {
         var daySpan;
         if (mode == "day") {
@@ -105,7 +105,7 @@ router.get("/salesPrice/:mode", async (req, res) =>{
 
         if (daySpan) {
             var result = await dw_sequelize.query(
-                'SELECT DISTINCT DIM_DATE.date as Date, IFNULL(SUM(subtotal),0) as Sales FROM DIM_DATE ' +
+                'SELECT DISTINCT DIM_DATE.date as Date, IFNULL(SUM(subtotal),0) as Revenue FROM DIM_DATE ' +
                 'LEFT JOIN DIM_TIME ON DIM_DATE.date = DIM_TIME.created_at ' +
                 'LEFT JOIN ORDER_FACT ON ORDER_FACT.time_key = DIM_TIME.time_key ' +
                 'LEFT JOIN DIM_ORDER ON ORDER_FACT.order_key = DIM_ORDER.order_key ' +
@@ -140,7 +140,8 @@ router.get("/topSellingBrand", async (req, res) => {
             'SELECT brand_name as `brand`, SUM(quantity) as `quantity` FROM DIM_PRODUCT ' +
             'INNER JOIN ORDER_FACT ON ORDER_FACT.product_key = DIM_PRODUCT.product_key ' +
             'INNER JOIN DIM_ORDER ON ORDER_FACT.order_key = DIM_ORDER.order_key ' +
-            'GROUP BY brand_name LIMIT 5;', {
+            'GROUP BY brand_name ' +
+            'ORDER BY quantity DESC LIMIT 5;', {
             type: QueryTypes.SELECT
         })
         

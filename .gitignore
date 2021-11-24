@@ -3,3 +3,8 @@ node_modules
 .vscode
 workspace.code-workspace
 .env
+.*
+retailbackend_ddns_net.pem
+ssl.key
+index.html
+404.html
