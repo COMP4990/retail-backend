@@ -1,5 +1,6 @@
 var DataTypes = require("sequelize").DataTypes;
 var _DIM_CUSTOMER = require("./DIM_CUSTOMER");
+var _DIM_DATE = require("./DIM_DATE");
 var _DIM_ORDER = require("./DIM_ORDER");
 var _DIM_PRODUCT = require("./DIM_PRODUCT");
 var _DIM_TIME = require("./DIM_TIME");
@@ -7,6 +8,7 @@ var _ORDER_FACT = require("./ORDER_FACT");
 
 function initModels(sequelize) {
   var DIM_CUSTOMER = _DIM_CUSTOMER(sequelize, DataTypes);
+  var DIM_DATE = _DIM_DATE(sequelize, DataTypes);
   var DIM_ORDER = _DIM_ORDER(sequelize, DataTypes);
   var DIM_PRODUCT = _DIM_PRODUCT(sequelize, DataTypes);
   var DIM_TIME = _DIM_TIME(sequelize, DataTypes);
@@ -23,6 +25,7 @@ function initModels(sequelize) {
 
   return {
     DIM_CUSTOMER,
+    DIM_DATE,
     DIM_ORDER,
     DIM_PRODUCT,
     DIM_TIME,

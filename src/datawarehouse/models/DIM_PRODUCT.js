@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     sku: {
       type: DataTypes.STRING(64),
-      allowNull: false
+      allowNull: true
     },
     item_in_stock: {
       type: DataTypes.INTEGER,

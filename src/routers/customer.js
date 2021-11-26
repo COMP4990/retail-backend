@@ -5,6 +5,22 @@ const bycrypt = require('bcryptjs') // used for encrypt password
 const jwt = require('jsonwebtoken')
 const fs = require('fs') // used for store user info in json web token
 const path = require('path')
+const multer = require('multer')
+const { dw_models } = require('../datawarehouse/dw_connect')
+const chalk = require('chalk')
+const {newCustomerInDB, newOrderInDB, newProductInDB, newTimeInDB} = require('../db/ETL')
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, "../../public"))
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '.jpg') //Appending .jpg
+    }
+})
+
+const upload = multer({storage})
+
 
 // List products in store
 router.get("/products", async (req, res) => {
@@ -33,6 +49,61 @@ router.get("/product", async (req, res) => {
         res.status(500).send(error)
     }
 })
+
+
+router.post("/addProduct",upload.single('product_image'), async(req, res) => {
+    const product_name = req.body.product_name
+    const description = req.body.description
+    const price = req.body.price
+
+    var image_path
+    if (req.file !== undefined){
+        image_path = "/" + req.file.filename
+    }else{
+        image_path = null
+    }
+    const sku = req.body.sku
+    const item_in_stock = req.body.item_in_stock
+    const brand_id = req.body.brand_id
+    const category_id = req.body.category_id
+
+    try {
+        const product = await models.product.create({
+            brand_id, 
+            product_name, 
+            category_id,
+            description, 
+            price, 
+            image_path, 
+            sku, 
+            item_in_stock})
+        
+        res.status(201).json(product)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+
+router.get("/brands", async (req, res) => {
+    try {
+        const brands = await models.brand.findAll({})
+        res.status(200).json(brands)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.get("/categories", async (req, res) => {
+    try {
+        const categories = await models.category.findAll({})
+        res.status(200).json(categories)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+
 
 // update item quantity & subtotal in shopping cart
 router.post("/addToCart", async (req, res) =>{
@@ -224,6 +295,7 @@ router.post("/register", async (req, res) => {
 router.post("/checkout", async (req, res) => {
     const user_id = req.body.user_id
     try {
+        
         const items = await models.cart.findAll(
             {
                 where:
@@ -291,9 +363,81 @@ router.post("/checkout", async (req, res) => {
 
             return checkout_items
         })
+        
+        var new_customer = await newCustomerInDB()
+        
+        var new_record = await newProductInDB()
+        // console.log(new_record)
+        var newOrder = await newOrderInDB()
+        var newTime = await newTimeInDB()
+        
 
+        // get the order entity & order_key in DIM_ORDER
+        // const order_key = order_record.order_key
+        
+        // console.log(order_record)
+        
+        const current_customer = await models.customer.findByPk(user_id)
+        const userInDIM = await dw_models.DIM_CUSTOMER.findOne({
+            where: {
+                username: current_customer.username,
+                fname: current_customer.fname,
+                lname: current_customer.lname,
+                address: current_customer.address,
+                email: current_customer.email
+            }
+        })
+        
+        // console.log(userInDIM)
+        
+        const timeEntity = await dw_models.DIM_TIME.findOne({
+            where: sequelize.where(sequelize.fn('date', sequelize.col('created_at')), new Date().toISOString().slice(0, 10))
+        })
+
+        // const order_record = await dw_models.DIM_ORDER.findOne({where: order_id })
+        new_record.map(async(item, index) => {
+
+            
+            // get the item entity in product table
+            // const product = await models.product.findByPk(item.product_id)
+            // // const product_brand = await models.brand.findByPk(product.brand_id)
+            // // const product_category_id = await models.category.findByPk(product.category_id)
+
+            // // find the corresponding product in DIM_PRODUCT and get the product_key
+            // const productInDIM = await dw_models.DIM_PRODUCT.findOne({
+            //     where: {
+            //         product_id: item.product_id,
+            //         product_name: product.product_name,
+            //         price: product.price
+            //     }
+            // })
+            // console.log(productInDIM)
+            
+            
+            
+            // console.log(order_record)
+
+            const order_fact = await dw_models.ORDER_FACT.create({
+                customer_key: userInDIM.customer_key,
+                time_key: timeEntity.time_key,
+                order_key: newOrder[0].order_key,
+                product_key: item.product_key,
+                quantity: ordered_items[index].quantity,
+                subtotal: ordered_items[index].subtotal,
+                price_each: item.price
+            })
+
+            return order_fact
+
+        })
+        
+
+
+        // console.log(order_key)
+        // Promise.all( async () => {
+            
+        // })
         res.status(201).send(result)
-
 
     } catch (error) {
         res.status(500).send(error)
