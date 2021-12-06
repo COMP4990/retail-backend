@@ -8,11 +8,11 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     day: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(2,0),
       allowNull: false
     },
     month: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(2,0),
       allowNull: false
     },
     year: {
@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     created_at: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false
     }
   }, {

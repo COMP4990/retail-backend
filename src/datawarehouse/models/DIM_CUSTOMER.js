@@ -17,19 +17,19 @@ module.exports = function(sequelize, DataTypes) {
     },
     fname: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: true
     },
     lname: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: true
     },
     address: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: true
     },
     email: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

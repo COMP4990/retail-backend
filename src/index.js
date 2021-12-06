@@ -1,15 +1,14 @@
 const dotenv = require('dotenv').config()
 // setup db connection string
 const {models, sequelize}= require("./db/db_connect")
+const https = require('https')
 const express = require('express');
 const admin = require('./routers/admin')
 const customer = require('./routers/customer')
 // used for Cross-Origin-Resource-Sharing
 const cors = require('cors')
-// used for encrypt password
-const bycrypt = require('bcryptjs')
-// used for store user info in json web token
-const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const path = require('path')
 
 
 const PORT = process.env.PORT || 8000
@@ -20,6 +19,8 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static('public'))
+app.use(express.static(path.join("../",__dirname),{ dotfiles: 'allow'}))
 app.use('/admin',admin)
 app.use('/',customer)
 
@@ -42,6 +43,14 @@ app.get('/', async (req, res) => {
 })
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }\nhttp://localhost:5000`));
+
+// const options = {
+//     key: fs.readFileSync('../ssl.key','utf-8'),
+//     cert: fs.readFileSync('../retailbackend_ddns_net.pem', 'utf-8')
+// }
+// https.createServer(options,app).listen(PORT, ()=>{
+//     console.log(`Listening on ${PORT}\nhttps://retailbackend.ddns.net:`+PORT+'/')
+// })
 
 // express()
 //   .use(express.static(path.join(__dirname, 'public')))

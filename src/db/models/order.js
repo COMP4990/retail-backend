@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
     payment_status: {
       type: DataTypes.STRING(20),
       allowNull: false,
-      defaultValue: "Incomplete"
+      defaultValue: "complete"
     }
   }, {
     sequelize,

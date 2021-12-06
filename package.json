@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node src/db/testConnection.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "ETL": "node src/db/ETL.js"
   },
   "repository": {
     "type": "git",
@@ -21,11 +22,12 @@
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "sequelize": "^6.7.0",
-    "sequelize-auto": "^0.8.4",
-    "dotenv": "^10.0.0"
+    "sequelize-auto": "^0.8.4"
   }
 }

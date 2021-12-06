@@ -13,8 +13,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     created_at: {
       type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: Sequelize.Sequelize.fn('current_timestamp')
+      allowNull: false
     },
     payment_status: {
       type: DataTypes.BOOLEAN,

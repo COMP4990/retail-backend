@@ -35,6 +35,7 @@ async function createAdmin(email, password) {
 }
 
 async function showAdmin(){
+  sequelize.sync();
   console.log("Show all admin records")
   const admin= await models.Admin.findAll({raw:true})
   console.log(typeof(admin))
